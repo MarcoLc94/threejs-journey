@@ -1,6 +1,63 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+//THIS IS THE VANILLA PATH
+// const image = new Image();
+// const texture = new THREE.Texture(image);
+// texture.colorSpace = THREE.SRGBColorSpace;
+
+// image.onload = () => {
+//   texture.needsUpdate = true;
+// };
+
+//**This is new way to load textures */
+
+const loadingManager = new THREE.LoadingManager();
+
+loadingManager.onStart = () => {
+  console.log("starting...");
+};
+loadingManager.onLoad = () => {
+  console.log("loaded");
+};
+loadingManager.onProgress = () => {
+  console.log("in progress");
+};
+loadingManager.onError = () => {
+  console.log("Error");
+};
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const colorTexture = textureLoader.load("/textures/checkerboard-1024x1024.png");
+// const colorTexture = textureLoader.load("/textures/door/color.jpg");
+colorTexture.colorSpace = THREE.SRGBColorSpace;
+const alphaTexture = textureLoader.load("/textures/dooor/alpha.jpg");
+const heightTexture = textureLoader.load("/textures/dooor/height.jpg");
+const normalTexture = textureLoader.load("/textures/dooor/normal.jpg");
+const ambientOcclusionTexture = textureLoader.load(
+  "/textures/dooor/ambientOcclusion.jpg"
+);
+const metalnessTexture = textureLoader.load("/textures/dooor/metalness.jpg");
+const roughnessTexture = textureLoader.load("/textures/dooor/roughness.jpg");
+
+//repeat property
+// colorTexture.repeat.x = 2;
+// colorTexture.repeat.y = 3;
+// colorTexture.wrapS = THREE.RepeatWrapping;
+// colorTexture.wrapT = THREE.RepeatWrapping;
+// colorTexture.offset.x = 0.5;
+// colorTexture.offset.y = 0.5;
+// colorTexture.rotation = Math.PI / 4;
+// colorTexture.center.x = 0.5;
+// colorTexture.center.y = 0.5;
+// image.src = "/textures/door/color.jpg";
+
+//minifaction
+//used to see better the details from far
+// colorTexture.minFilter = THREE.NearestFilter;
+
+//magnification
+//used to see better the details or avoid blurry when the texture is blurry for strech
+colorTexture.magFilter = THREE.NearestFilter;
 /**
  * Base
  */
@@ -14,7 +71,10 @@ const scene = new THREE.Scene();
  * Object
  */
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const material = new THREE.MeshBasicMaterial({
+  map: colorTexture,
+  alphaMap: alphaTexture,
+});
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
